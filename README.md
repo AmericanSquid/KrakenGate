@@ -4,7 +4,7 @@
 
 It’s currently in **testing / development**, so expect rough edges.
 
-Remote TRX reuses:
+KrakenGate reuses:
 
 * The **`ptt_controller` module** directly from KrakenRelay (CM108 HID PTT control).
 * A **modified version of the old, deprecated Mumble interface** from KrakenRelay, adapted into a standalone `MumbleBridge`.
@@ -14,13 +14,13 @@ Remote TRX reuses:
 ## ✨ Purpose
 
 Many older or “legacy” radios don’t support native network control or digital modes.
-Remote TRX gives you a way to:
+KrakenGate gives you a way to:
 
 * Listen to your station’s audio anywhere via Mumble.
 * Key your transmitter remotely with hardware PTT.
 * Feed audio back into the radio so remote users can transmit through it.
 
-Essentially, it’s a **remote base for analog rigs** built from a Raspberry Pi, a USB soundcard, and a CM108 HID PTT dongle.
+Essentially, it’s an **RF-to-internet for analog rigs** built from a Raspberry Pi, a USB soundcard, and a CM108 HID PTT dongle.
 
 ---
 
@@ -137,10 +137,3 @@ The app will unkey, close audio streams, and disconnect cleanly.
 * Refine error handling and reconnection logic.
 * Reconcile TX/RX audio level reporting.
 * Cleanup leftover legacy code from KrakenRelay’s Mumble interface.
-* Add optional authentication on Flask API.
-
----
-
-This makes it clear: it’s **for remote operation of legacy/analog radios**, a **testing spin-off from KrakenRelay**, and uses the same CM108 PTT code + a simplified Mumble bridge.
-
-Would you like me to also add a **“Differences from KrakenRelay” table** showing what features were stripped out vs. kept (Hamlib, watchdog, APRS, etc.)? (That’s handy for testers who already know KR.)
