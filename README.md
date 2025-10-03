@@ -1,2 +1,146 @@
-# KrakenGate
-An RF-to-Internet gateway designed for easy integration with legacy radios.
+# KrakenGate – Mumble-to-Radio Bridge
+
+**KrakenGate** is a **spin-off of [KrakenRelay]** designed for **remote operation of legacy radios** over the internet using [Mumble](https://www.mumble.info).
+
+It’s currently in **testing / development**, so expect rough edges.
+
+Remote TRX reuses:
+
+* The **`ptt_controller` module** directly from KrakenRelay (CM108 HID PTT control).
+* A **modified version of the old, deprecated Mumble interface** from KrakenRelay, adapted into a standalone `MumbleBridge`.
+
+---
+
+## ✨ Purpose
+
+Many older or “legacy” radios don’t support native network control or digital modes.
+Remote TRX gives you a way to:
+
+* Listen to your station’s audio anywhere via Mumble.
+* Key your transmitter remotely with hardware PTT.
+* Feed audio back into the radio so remote users can transmit through it.
+
+Essentially, it’s a **remote base for analog rigs** built from a Raspberry Pi, a USB soundcard, and a CM108 HID PTT dongle.
+
+---
+
+## ✨ Features
+
+* **Two-way audio bridging**
+
+  * **Radio RX → Mumble**: captures audio from the radio and streams it to a Mumble channel.
+  * **Mumble → Radio TX**: plays remote Mumble audio into the radio when PTT is keyed.
+
+* **Hardware PTT with CM108**
+
+  * Keys/unkeys a USB CM108 sound fob (or DigiRig Lite) on a defined GPIO pin.
+
+* **Web UI + REST API**
+
+  * PTT button + spacebar control.
+  * Real-time RX/TX meters.
+  * JSON status API for integration/monitoring.
+
+* **Secure tunneling**
+
+  * Web server is meant to run behind SSH tunnel or VPN.
+
+---
+
+## ⚠️ Status
+
+This is **experimental**.
+It’s being tested as a lightweight, single-purpose bridge, separate from KrakenRelay’s larger feature set.
+Expect:
+
+* Breaking changes.
+* Incomplete error handling.
+* Bugs carried over from the legacy Mumble interface.
+
+---
+
+## 🗂 Requirements
+
+* Linux host (Raspberry Pi recommended).
+* **Legacy/analog radio** with:
+
+  * Audio in/out connected to a USB soundcard (“USB Audio CODEC” type).
+  * PTT control via CM108 HID device (e.g. DigiRig Lite).
+* Python 3.9+.
+
+Python deps:
+
+```bash
+pip install sounddevice flask pymumble-py3 python-dotenv numpy
+```
+
+---
+
+## ⚙️ Configuration
+
+All settings are in `.env`:
+
+| Variable          | Default           | Description                  |
+| ----------------- | ----------------- | ---------------------------- |
+| `MUMBLE_SERVER`   | `127.0.0.1`       | Mumble server address        |
+| `MUMBLE_PORT`     | `64738`           | Server port                  |
+| `MUMBLE_USERNAME` | `shackpi`         | Username                     |
+| `MUMBLE_PASSWORD` | `password`        | Password                     |
+| `MUMBLE_CHANNEL`  | `RemoteTx`        | Channel to join              |
+| `PTT_DEVICE`      | `/dev/hidraw0`    | HID device                   |
+| `PTT_PIN`         | `3`               | Pin to toggle                |
+| `AUDIO_INPUT`     | `USB Audio CODEC` | Input device (radio → Pi)    |
+| `AUDIO_OUTPUT`    | `USB Audio CODEC` | Output device (Pi → radio)   |
+| `SAMPLE_RATE`     | `48000`           | Sample rate                  |
+| `CHUNK`           | `1024`            | Block size                   |
+| `TAIL_HANG`       | `0.75`            | Seconds of hang before unkey |
+| `HTTP_PORT`       | `5000`            | Flask server port            |
+
+---
+
+## 🚀 Running
+
+```bash
+python3 remote_trx.py
+```
+
+Access from your browser:
+
+Open [http://localhost:5000](http://localhost:5000) for the dashboard.
+
+* Click/hold the button or press **spacebar** for PTT.
+* Watch RX/TX meters update in real time.
+
+---
+
+## 🔀 Audio / PTT Flow
+
+```
+Legacy Radio RX ──► USB Soundcard (Input) ──► MumbleBridge ──► Mumble Server
+Mumble Server ──► MumbleBridge ──► USB Soundcard (Output) ──► Legacy Radio Mic (when PTT active)
+                                        │
+                                        ▼
+                                CM108 HID PTT Keying
+```
+
+---
+
+## 🛑 Stopping
+
+Press **Ctrl+C** to exit.
+The app will unkey, close audio streams, and disconnect cleanly.
+
+---
+
+## 🔮 Roadmap / Known Gaps
+
+* Refine error handling and reconnection logic.
+* Reconcile TX/RX audio level reporting.
+* Cleanup leftover legacy code from KrakenRelay’s Mumble interface.
+* Add optional authentication on Flask API.
+
+---
+
+This makes it clear: it’s **for remote operation of legacy/analog radios**, a **testing spin-off from KrakenRelay**, and uses the same CM108 PTT code + a simplified Mumble bridge.
+
+Would you like me to also add a **“Differences from KrakenRelay” table** showing what features were stripped out vs. kept (Hamlib, watchdog, APRS, etc.)? (That’s handy for testers who already know KR.)
