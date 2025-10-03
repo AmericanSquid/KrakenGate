@@ -1,4 +1,4 @@
-# KrakenGate – Mumble-to-Radio Bridge
+# KrakenGate – Remote Control for Legacy Radios
 
 **KrakenGate** is a **spin-off of [KrakenRelay]** designed for **remote operation of legacy radios** over the internet using [Mumble](https://www.mumble.info).
 
