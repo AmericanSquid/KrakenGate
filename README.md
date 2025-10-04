@@ -20,7 +20,7 @@ KrakenGate gives you a way to:
 * Key your transmitter remotely with hardware PTT.
 * Feed audio back into the radio so remote users can transmit through it.
 
-Essentially, it’s an **RF-to-internet for analog rigs** built from a Raspberry Pi, a USB soundcard, and a CM108 HID PTT dongle.
+Essentially, it’s an RF-to-internet bridge built from a Raspberry Pi and a DigiRig interface.
 
 ---
 
@@ -33,7 +33,7 @@ Essentially, it’s an **RF-to-internet for analog rigs** built from a Raspberry
 
 * **Hardware PTT with CM108**
 
-  * Keys/unkeys a USB CM108 sound fob (or DigiRig Lite) on a defined GPIO pin.
+  * Keys/unkeys a USB CM108 interface (or DigiRig Lite) on a defined GPIO pin.
 
 * **Web UI + REST API**
 
@@ -64,7 +64,7 @@ Expect:
 * Linux host (Raspberry Pi recommended).
 * **Legacy/analog radio** with:
 
-  * Audio in/out connected to a USB soundcard (“USB Audio CODEC” type).
+  * Audio in/out connected to a USB soundcard.
   * PTT control via CM108 HID device (e.g. DigiRig Lite).
 * Python 3.9+.
 
